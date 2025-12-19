@@ -1,4 +1,5 @@
 import './App.css';
+import gitexLogo from './assets/gitex.png';
 
 const baseFeatures = [
   { key: 'lounge', label: 'Access to Conventions & Investor Lounge' },
@@ -12,9 +13,11 @@ const baseFeatures = [
 const tickets = [
   {
     id: 'purple',
+    variant: 'hero',
     gradient:
       'linear-gradient(160deg, #0f0b1f 0%, #161527 32%, #3f1657 62%, #7d1e7f 100%)',
     badge: null,
+    oldPrice: '43',
     price: { currency: 'USD', amount: '32.5', note: 'Incl. 20% VAT' },
     button: 'Buy Now',
     logoText: ['GITEX', 'Africa Ai'],
@@ -120,6 +123,10 @@ function FeaturePill({ label, status }) {
 }
 
 function TicketCard({ ticket }) {
+  if (ticket.variant === 'hero') {
+    return <HeroTicket ticket={ticket} />;
+  }
+
   const features = baseFeatures.map((item) => ({
     ...item,
     status: ticket.featureStatus[item.key] || 'muted',
@@ -224,7 +231,63 @@ function TicketCard({ ticket }) {
   );
 }
 
+function HeroTicket({ ticket }) {
+  return (
+    <div className="ticket-card hero-card">
+      <div className="hero-bg" />
+      <div className="hero-glow" />
+      <div className="notch left">
+        <span />
+      </div>
+      <div className="notch right">
+        <span />
+      </div>
+
+      <div className="hero-top">
+        <div className="hero-title">VISITOR 3 DAY ACCESS TICKET</div>
+        <div className="hero-link">VIEW DETAILS ƒ+'</div>
+      </div>
+
+      <div className="hero-body">
+        <div className="hero-content-block">
+          <p className="hero-copy">
+            Visitor Passes provide <span>3 DAYS ACCESS</span> to GITEX NIGERIA
+            exhibition and all free conference
+          </p>
+
+          <div className="hero-logos">
+            <div className="hero-logo-image">
+              <img src={gitexLogo} alt="GITEX Nigeria" className="hero-logo-img" />
+            </div>
+          </div>
+        </div>
+
+        <div className="hero-divider" />
+
+        <div className="hero-price-row">
+          <div className="hero-price-left">
+            {ticket.oldPrice && (
+              <span className="old-price">
+                {ticket.price.currency} {ticket.oldPrice}
+              </span>
+            )}
+            <span className="price-chip">{ticket.price.amount}</span>
+            <span className="hero-note">{ticket.price.note}</span>
+          </div>
+          <div className="hero-toggles">
+            <button className="hero-toggle">-</button>
+            <div className="hero-qty">{ticket.quantity || '25'}</div>
+            <button className="hero-toggle">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function App() {
+  const rows = [tickets.slice(0, 3), tickets.slice(3)];
+
   return (
     <div className="page-shell">
       <header className="header-strip">
@@ -233,9 +296,13 @@ function App() {
       </header>
 
       <main className="content-frame">
-        <div className="tickets-grid">
-          {tickets.map((ticket) => (
-            <TicketCard key={ticket.id} ticket={ticket} />
+        <div className="tickets-rows">
+          {rows.map((group, idx) => (
+            <div className="tickets-row" key={idx}>
+              {group.map((ticket) => (
+                <TicketCard key={ticket.id} ticket={ticket} />
+              ))}
+            </div>
           ))}
         </div>
       </main>
