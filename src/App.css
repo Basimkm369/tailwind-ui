@@ -508,3 +508,51 @@
   justify-content: center;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.22);
 }
+
+@media (max-width: 640px) {
+  .footer-bar {
+    padding: 0 16px;
+    justify-content: center;
+  }
+
+  .footer-card {
+    width: 100%;
+    max-width: 360px;
+    height: 70px;
+    padding: 10px 12px;
+    gap: 10px;
+    flex-wrap: nowrap;
+  }
+
+  .footer-text {
+    width: auto;
+    height: auto;
+    align-items: flex-start;
+  }
+
+  .footer-total {
+    font-size: 16px;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  .footer-amount {
+    font-size: 22px;
+  }
+
+  .footer-note {
+    font-size: 16px;
+  }
+
+  .footer-subline {
+    margin-top: 4px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .footer-button {
+    width: 110px;
+    height: 40px;
+    font-size: 15px;
+  }
+}
