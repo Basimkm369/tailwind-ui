@@ -6,14 +6,13 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  position: relative;
 }
 
 .header-strip,
 .footer-strip {
-  position: relative;
   width: 100%;
   height: 214px;
+  flex: none;
   background-image: url('./assets/headerImage.png');
   background-size: cover;
   background-position: center;
@@ -29,21 +28,15 @@
   padding: 16px;
   box-sizing: border-box;
   height: 1082px;
-}
-
-.footer-strip {
-  position: absolute;
-  top: 1296px;
-  left: 0;
+  flex: none;
 }
 
 .footer-bar {
-  position: absolute;
-  top: 1510px;
-  left: 0;
-  width: 1728px;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
   height: 120px;
-  background: linear-gradient(90deg, #299d3f 0%, #123f22 100%);
+  background: linear-gradient(0deg, #299d3f 0%, #123f22 100%);
   opacity: 1;
   display: flex;
   align-items: center;

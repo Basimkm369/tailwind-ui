@@ -4,7 +4,7 @@
 
 :root {
   font-family: 'Poppins', 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  background-color: #f3f5f7;
+  background-color: #ffffff;
   color: #111827;
 }
 
@@ -15,9 +15,10 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(180deg, #1aa457 0%, #f7f8fb 40%, #1aa457 100%);
+  background: #ffffff;
 }
 
 #root {
   min-height: 100vh;
+  background: #ffffff;
 }
