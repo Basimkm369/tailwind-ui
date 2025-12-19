@@ -1,0 +1,42 @@
+.pixel-cluster {
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.18) 12px, transparent 12px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18) 12px, transparent 12px);
+  background-size: 26px 26px;
+  opacity: 0.65;
+}
+
+.card-shine {
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.ribbon {
+  position: absolute;
+  top: 18px;
+  left: -46px;
+  transform: rotate(-45deg);
+  padding: 10px 68px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(135deg, #21c45c, #15903b);
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.35);
+}
+
+.ribbon.orange {
+  background: linear-gradient(135deg, #f7a700, #f05b21);
+}
+
+.card-border {
+  position: relative;
+}
+
+.card-border::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 20px;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
