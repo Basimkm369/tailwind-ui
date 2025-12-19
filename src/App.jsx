@@ -12,13 +12,11 @@ const baseFeatures = [
 const tickets = [
   {
     id: 'purple',
-    gradient: 'linear-gradient(135deg, #6d1bc6 0%, #d43f7a 100%)',
+    gradient:
+      'linear-gradient(160deg, #0f0b1f 0%, #161527 32%, #3f1657 62%, #7d1e7f 100%)',
     badge: null,
-    title: 'Visitor 3 Day Access Ticket',
-    sub: 'VIEW DETAILS +',
     price: { currency: 'USD', amount: '32.5', note: 'Incl. 20% VAT' },
     button: 'Buy Now',
-    accent: '#b15ff4',
     logoText: ['GITEX', 'Africa Ai'],
     featureStatus: {
       lounge: 'active',
@@ -28,21 +26,19 @@ const tickets = [
       access: 'muted',
       dubai: 'muted',
     },
-    toggles: ['USD', 'EUR', 'AED'],
+    toggles: ['USD', 'AED', 'EUR'],
+    quantity: '25',
   },
   {
     id: 'orange',
-    gradient: 'linear-gradient(135deg, #f26b1f 0%, #f9b054 100%)',
+    gradient: 'linear-gradient(150deg, #f06f21 0%, #f9b25a 100%)',
     badge: null,
-    title: 'Visitor 3 Day Access Ticket',
-    sub: 'VIEW DETAILS +',
     price: { currency: 'FREE', amount: '', note: 'Incl. 15% VAT' },
     button: 'BUY NOW',
-    accent: '#f9ae5a',
     featureStatus: {
       lounge: 'active',
       network: 'active',
-      masterclasses: 'active',
+      masterclasses: 'muted',
       conference: 'active',
       access: 'active',
       dubai: 'muted',
@@ -50,13 +46,11 @@ const tickets = [
   },
   {
     id: 'teal',
-    gradient: 'linear-gradient(135deg, #1c9f81 0%, #4fd3b2 100%)',
-    badge: { text: 'EXCLUSIVE', color: 'orange' },
-    title: 'Visitor 3 Day Access Ticket',
-    sub: 'VIEW DETAILS +',
+    gradient: 'linear-gradient(150deg, #1ca077 0%, #4ed9ba 100%)',
+    badge: null,
+    sideBadge: { text: 'Exclusive', color: 'green' },
     price: { currency: 'FREE', amount: '', note: 'Incl. 15% VAT' },
     button: 'BUY NOW',
-    accent: '#2bd3b2',
     featureStatus: {
       lounge: 'active',
       network: 'active',
@@ -68,13 +62,10 @@ const tickets = [
   },
   {
     id: 'red',
-    gradient: 'linear-gradient(135deg, #d22c2c 0%, #f08140 100%)',
+    gradient: 'linear-gradient(145deg, #d52d2e 0%, #ef7f3f 100%)',
     badge: { text: 'Best Seller', color: 'green' },
-    title: 'Visitor 3 Day Access Ticket',
-    sub: 'VIEW DETAILS +',
     price: { currency: 'FREE', amount: '', note: 'Incl. 15% VAT' },
     button: 'BUY NOW',
-    accent: '#ff9863',
     featureStatus: {
       lounge: 'active',
       network: 'active',
@@ -86,13 +77,10 @@ const tickets = [
   },
   {
     id: 'green',
-    gradient: 'linear-gradient(135deg, #1c9f81 0%, #61d36d 100%)',
+    gradient: 'linear-gradient(150deg, #1c9f81 0%, #61d36d 100%)',
     badge: null,
-    title: 'Visitor 3 Day Access Ticket',
-    sub: 'VIEW DETAILS +',
     price: { currency: 'FREE', amount: '', note: 'Incl. 15% VAT' },
     button: 'BUY NOW',
-    accent: '#63d17d',
     featureStatus: {
       lounge: 'active',
       network: 'active',
@@ -104,46 +92,29 @@ const tickets = [
   },
   {
     id: 'blue',
-    gradient: 'linear-gradient(135deg, #1b4aa9 0%, #2f8adb 100%)',
+    gradient: 'linear-gradient(150deg, #1d4aa8 0%, #2f8adb 100%)',
     badge: null,
-    title: 'Visitor 3 Day Access Ticket',
-    sub: 'VIEW DETAILS +',
     price: { currency: 'FREE', amount: '', note: 'Incl. 15% VAT' },
     button: 'BUY NOW',
-    accent: '#3a9cf5',
     featureStatus: {
       lounge: 'active',
       network: 'active',
-      masterclasses: 'active',
+      masterclasses: 'muted',
       conference: 'active',
-      access: 'active',
+      access: 'muted',
       dubai: 'muted',
     },
   },
 ];
-
-const pillStyles = {
-  active: 'border border-[#35d46a] bg-[#35d46a]/15 text-white',
-  warning: 'border border-[#ff4d67] bg-[#ff4d67]/20 text-white',
-  muted: 'border border-white/10 bg-black/25 text-white/70',
-};
-
-const dotStyles = {
-  active: 'bg-[#35d46a]',
-  warning: 'bg-[#ff4d67]',
-  muted: 'bg-white/40',
-};
 
 const glowLayers =
   'radial-gradient(circle at 18% 18%, rgba(255,255,255,0.18), transparent 32%), radial-gradient(circle at 80% 12%, rgba(255,255,255,0.14), transparent 28%), radial-gradient(circle at 60% 80%, rgba(0,0,0,0.25), transparent 45%)';
 
 function FeaturePill({ label, status }) {
   return (
-    <div
-      className={`flex items-center gap-3 rounded-full px-3 py-2 text-sm ${pillStyles[status]}`}
-    >
-      <span className={`h-2.5 w-2.5 rounded-full ${dotStyles[status]}`} />
-      <span className="leading-tight">{label}</span>
+    <div className={`feature-pill ${status}`}>
+      <span className="pill-dot" />
+      <span className="pill-text">{label}</span>
     </div>
   );
 }
@@ -153,14 +124,22 @@ function TicketCard({ ticket }) {
     ...item,
     status: ticket.featureStatus[item.key] || 'muted',
   }));
+  const isFree = ticket.price.currency === 'FREE';
 
   return (
-    <div className="relative card-border overflow-hidden rounded-[22px] shadow-card min-h-[320px]">
+    <div className="ticket-card">
       <div
-        className="absolute inset-0 card-shine"
+        className="ticket-bg"
         style={{ backgroundImage: `${glowLayers}, ${ticket.gradient}` }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/15 to-black/45" />
+      <div className="ticket-overlay" />
+
+      {ticket.sideBadge && (
+        <div className={`side-badge ${ticket.sideBadge.color}`}>
+          {ticket.sideBadge.text}
+        </div>
+      )}
+
       {ticket.badge && (
         <div
           className={`ribbon ${
@@ -170,86 +149,75 @@ function TicketCard({ ticket }) {
           {ticket.badge.text}
         </div>
       )}
-      <div className="absolute -left-3 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-white shadow-md">
-        <div className="absolute inset-1 rounded-full bg-gray-100" />
+
+      <div className="notch left">
+        <span />
       </div>
-      <div className="absolute -right-3 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-white shadow-md">
-        <div className="absolute inset-1 rounded-full bg-gray-100" />
+      <div className="notch right">
+        <span />
       </div>
-      <div className="relative flex h-full flex-col gap-4 px-5 py-5 sm:px-6 sm:py-6">
-        <div>
-          <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-white/90">
-            Visitor 3 Day Access Ticket
-          </p>
-          <p className="text-[12px] font-semibold uppercase tracking-[0.04em] text-white/70">
-            {ticket.sub}
-          </p>
+
+      <div className="ticket-inner">
+        <div className="ticket-header">
+          <p className="ticket-title">VISITOR 3 DAY ACCESS TICKET</p>
+          <p className="ticket-sub">VIEW DETAILS -&gt;</p>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <p className="text-xs text-white/70 leading-relaxed">
-            Visitor Passes provide{' '}
-            <span className="font-semibold text-[#39d86c]">3 DAYS ACCESS</span>{' '}
-            to GITEX NIGERIA exhibition and all free conference
-          </p>
-          {ticket.logoText && (
-            <div className="flex items-center gap-3 text-lg font-semibold text-white">
-              <span className="tracking-wide">{ticket.logoText[0]}</span>
-              <span className="text-xl italic">{ticket.logoText[1]}</span>
-            </div>
-          )}
-          <div className="grid grid-cols-1 gap-2">
-            {features.map((item) => (
-              <FeaturePill
-                key={item.key}
-                label={item.label}
-                status={item.status}
-              />
-            ))}
+        <p className="ticket-description">
+          Visitor Passes provide <span>3 DAYS ACCESS</span> to GITEX NIGERIA
+          exhibition and all free conference
+        </p>
+
+        {ticket.logoText && (
+          <div className="logo-row">
+            <span className="logo-main">{ticket.logoText[0]}</span>
+            <span className="logo-sub">{ticket.logoText[1]}</span>
           </div>
+        )}
+
+        <div className="feature-list">
+          {features.map((item) => (
+            <FeaturePill
+              key={item.key}
+              label={item.label}
+              status={item.status}
+            />
+          ))}
         </div>
 
-        <div className="mt-auto flex items-end justify-between gap-3">
-          <div className="flex items-end gap-2 text-white">
-            {ticket.price.currency !== 'FREE' ? (
+        <div className="ticket-footer">
+          <div className="price-block">
+            {isFree ? (
               <>
-                <span className="rounded-md bg-black/35 px-2 py-1 text-[11px] font-semibold uppercase tracking-wide">
-                  {ticket.price.currency}
-                </span>
-                <span className="text-3xl font-bold leading-none drop-shadow-sm">
-                  {ticket.price.amount}
-                </span>
-                <div className="text-[11px] uppercase leading-3 text-white/80">
-                  <div>{ticket.price.note}</div>
-                </div>
+                <div className="price-free">FREE</div>
+                <div className="vat-note">{ticket.price.note}</div>
               </>
             ) : (
-              <div>
-                <div className="text-lg font-bold leading-tight">
-                  {ticket.price.currency}
-                </div>
-                <div className="text-[11px] uppercase text-white/80">
-                  {ticket.price.note}
-                </div>
-              </div>
+              <>
+                <span className="currency-tag">{ticket.price.currency}</span>
+                <span className="price-number">{ticket.price.amount}</span>
+                <div className="vat-note">{ticket.price.note}</div>
+              </>
             )}
           </div>
-          {ticket.toggles ? (
-            <div className="flex items-center gap-2 rounded-full bg-black/25 px-2 py-1 text-[11px] uppercase text-white/80">
-              {ticket.toggles.map((toggle) => (
-                <span
-                  key={toggle}
-                  className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 font-semibold text-white shadow-inner"
-                >
-                  {toggle}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <button className="rounded-lg bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wide text-gray-900 shadow-md transition hover:-translate-y-[1px] hover:shadow-lg">
-              {ticket.button}
-            </button>
-          )}
+
+          <div className="cta-area">
+            {ticket.toggles ? (
+              <div className="toggle-row">
+                {ticket.toggles.map((toggle, index) => (
+                  <span
+                    key={toggle}
+                    className={`toggle-chip ${index === 0 ? 'active' : ''}`}
+                  >
+                    {toggle}
+                  </span>
+                ))}
+                {ticket.quantity && <div className="qty-chip">{ticket.quantity}</div>}
+              </div>
+            ) : (
+              <button className="buy-button">{ticket.button}</button>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -258,38 +226,36 @@ function TicketCard({ ticket }) {
 
 function App() {
   return (
-    <div className="flex min-h-screen justify-center bg-white">
-      <div className="page-shell">
-        <header className="header-strip text-white">
-          <div className="strip-overlay" />
-          <div className="strip-frame" />
-        </header>
+    <div className="page-shell">
+      <header className="header-strip">
+        <div className="strip-overlay" />
+        <div className="strip-frame" />
+      </header>
 
-        <main className="content-frame relative z-10 w-full">
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {tickets.map((ticket) => (
-              <TicketCard key={ticket.id} ticket={ticket} />
-            ))}
-          </div>
-        </main>
+      <main className="content-frame">
+        <div className="tickets-grid">
+          {tickets.map((ticket) => (
+            <TicketCard key={ticket.id} ticket={ticket} />
+          ))}
+        </div>
+      </main>
 
-        <footer className="footer-strip">
-          <div className="strip-overlay" />
-          <div className="strip-frame" />
-        </footer>
+      <footer className="footer-strip">
+        <div className="strip-overlay" />
+        <div className="strip-frame" />
+      </footer>
 
-        <div className="footer-bar">
-          <div className="footer-card">
-            <div className="footer-text">
-              <div className="footer-total">
-                <span className="footer-total-label">Total: </span>
-                <span className="footer-amount">EUR 0</span>
-                <span className="footer-note"> Incl. 19% VAT</span>
-              </div>
-              <div className="footer-subline">View Ticket summary</div>
+      <div className="footer-bar">
+        <div className="footer-card">
+          <div className="footer-text">
+            <div className="footer-total">
+              <span className="footer-total-label">Total: </span>
+              <span className="footer-amount">EUR 0</span>
+              <span className="footer-note"> Incl. 19% VAT</span>
             </div>
-            <button className="footer-button">Buy Now</button>
+            <div className="footer-subline">View Ticket summary</div>
           </div>
+          <button className="footer-button">Buy Now</button>
         </div>
       </div>
     </div>
