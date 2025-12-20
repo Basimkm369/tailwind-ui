@@ -1,8 +1,11 @@
+import { useMemo } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import './App.css';
-import gitexLogo from './assets/gitex.png';
+import TicketCard from './components/TicketCard';
+import FormsPage from './pages/FormsPage';
 
 const baseFeatures = [
-  { key: 'lounge', label: 'Access to Conventions & Investor Lounge' },
+  { key: 'lounge', label: 'Access to ConneXions & Investor Lounge' },
   { key: 'network', label: 'Network Events' },
   { key: 'masterclasses', label: 'All Masterclasses' },
   { key: 'conference', label: 'All Conference Tracks' },
@@ -34,17 +37,19 @@ const tickets = [
   },
   {
     id: 'orange',
-    gradient: 'linear-gradient(150deg, #f06f21 0%, #f9b25a 100%)',
+    variant: 'visitor',
+    gradient:
+      'radial-gradient(circle at 20% 20%, rgba(255,255,255,0.08), transparent 32%), radial-gradient(circle at 80% 18%, rgba(0,0,0,0.35), transparent 40%), linear-gradient(165deg, #1a0c16 0%, #050507 55%, #0d1823 100%)',
     badge: null,
-    price: { currency: 'FREE', amount: '', note: 'Incl. 15% VAT' },
+    price: { currency: 'FREE', amount: '', note: 'Incl. 19% VAT' },
     button: 'BUY NOW',
     featureStatus: {
       lounge: 'active',
       network: 'active',
-      masterclasses: 'muted',
+      masterclasses: 'active',
       conference: 'active',
       access: 'active',
-      dubai: 'muted',
+      dubai: 'active',
     },
   },
   {
@@ -110,183 +115,13 @@ const tickets = [
   },
 ];
 
-const glowLayers =
-  'radial-gradient(circle at 18% 18%, rgba(255,255,255,0.18), transparent 32%), radial-gradient(circle at 80% 12%, rgba(255,255,255,0.14), transparent 28%), radial-gradient(circle at 60% 80%, rgba(0,0,0,0.25), transparent 45%)';
+function TicketsPage() {
+  const navigate = useNavigate();
+  const rows = useMemo(() => [tickets.slice(0, 3), tickets.slice(3)], []);
 
-function FeaturePill({ label, status }) {
-  return (
-    <div className={`feature-pill ${status}`}>
-      <span className="pill-dot" />
-      <span className="pill-text">{label}</span>
-    </div>
-  );
-}
-
-function TicketCard({ ticket }) {
-  if (ticket.variant === 'hero') {
-    return <HeroTicket ticket={ticket} />;
-  }
-
-  const features = baseFeatures.map((item) => ({
-    ...item,
-    status: ticket.featureStatus[item.key] || 'muted',
-  }));
-  const isFree = ticket.price.currency === 'FREE';
-
-  return (
-    <div className="ticket-card">
-      <div
-        className="ticket-bg"
-        style={{ backgroundImage: `${glowLayers}, ${ticket.gradient}` }}
-      />
-      <div className="ticket-overlay" />
-
-      {ticket.sideBadge && (
-        <div className={`side-badge ${ticket.sideBadge.color}`}>
-          {ticket.sideBadge.text}
-        </div>
-      )}
-
-      {ticket.badge && (
-        <div
-          className={`ribbon ${
-            ticket.badge.color === 'orange' ? 'orange' : ''
-          }`}
-        >
-          {ticket.badge.text}
-        </div>
-      )}
-
-      <div className="notch left">
-        <span />
-      </div>
-      <div className="notch right">
-        <span />
-      </div>
-
-      <div className="ticket-inner">
-        <div className="ticket-header">
-          <p className="ticket-title">VISITOR 3 DAY ACCESS TICKET</p>
-          <p className="ticket-sub">VIEW DETAILS -&gt;</p>
-        </div>
-
-        <p className="ticket-description">
-          Visitor Passes provide <span>3 DAYS ACCESS</span> to GITEX NIGERIA
-          exhibition and all free conference
-        </p>
-
-        {ticket.logoText && (
-          <div className="logo-row">
-            <span className="logo-main">{ticket.logoText[0]}</span>
-            <span className="logo-sub">{ticket.logoText[1]}</span>
-          </div>
-        )}
-
-        <div className="feature-list">
-          {features.map((item) => (
-            <FeaturePill
-              key={item.key}
-              label={item.label}
-              status={item.status}
-            />
-          ))}
-        </div>
-
-        <div className="ticket-footer">
-          <div className="price-block">
-            {isFree ? (
-              <>
-                <div className="price-free">FREE</div>
-                <div className="vat-note">{ticket.price.note}</div>
-              </>
-            ) : (
-              <>
-                <span className="currency-tag">{ticket.price.currency}</span>
-                <span className="price-number">{ticket.price.amount}</span>
-                <div className="vat-note">{ticket.price.note}</div>
-              </>
-            )}
-          </div>
-
-          <div className="cta-area">
-            {ticket.toggles ? (
-              <div className="toggle-row">
-                {ticket.toggles.map((toggle, index) => (
-                  <span
-                    key={toggle}
-                    className={`toggle-chip ${index === 0 ? 'active' : ''}`}
-                  >
-                    {toggle}
-                  </span>
-                ))}
-                {ticket.quantity && <div className="qty-chip">{ticket.quantity}</div>}
-              </div>
-            ) : (
-              <button className="buy-button">{ticket.button}</button>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function HeroTicket({ ticket }) {
-  return (
-    <div className="ticket-card hero-card">
-      <div className="hero-bg" />
-      <div className="hero-glow" />
-      <div className="notch left">
-        <span />
-      </div>
-      <div className="notch right">
-        <span />
-      </div>
-
-      <div className="hero-top">
-        <div className="hero-title">VISITOR 3 DAY ACCESS TICKET</div>
-        <div className="hero-link">VIEW DETAILS ƒ+'</div>
-      </div>
-
-      <div className="hero-body">
-        <div className="hero-content-block">
-          <p className="hero-copy">
-            Visitor Passes provide <span>3 DAYS ACCESS</span> to GITEX NIGERIA
-            exhibition and all free conference
-          </p>
-
-          <div className="hero-logos">
-            <div className="hero-logo-image">
-              <img src={gitexLogo} alt="GITEX Nigeria" className="hero-logo-img" />
-            </div>
-          </div>
-        </div>
-
-        <div className="hero-divider" />
-
-        <div className="hero-price-row">
-          <div className="hero-price-left">
-            {ticket.oldPrice && (
-              <span className="old-price">
-                {ticket.price.currency} {ticket.oldPrice}
-              </span>
-            )}
-            <span className="price-chip">{ticket.price.amount}</span>
-            <span className="hero-note">{ticket.price.note}</span>
-          </div>
-          <div className="hero-toggles">
-            <button className="hero-toggle">-</button>
-            <div className="hero-qty">{ticket.quantity || '25'}</div>
-            <button className="hero-toggle">+</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function App() {
-  const rows = [tickets.slice(0, 3), tickets.slice(3)];
+  const handleBuy = (ticket) => {
+    navigate('/form', { state: { ticketId: ticket.id } });
+  };
 
   return (
     <div className="page-shell">
@@ -300,7 +135,12 @@ function App() {
           {rows.map((group, idx) => (
             <div className="tickets-row" key={idx}>
               {group.map((ticket) => (
-                <TicketCard key={ticket.id} ticket={ticket} />
+                <TicketCard
+                  key={ticket.id}
+                  ticket={ticket}
+                  baseFeatures={baseFeatures}
+                  onBuy={handleBuy}
+                />
               ))}
             </div>
           ))}
@@ -322,10 +162,32 @@ function App() {
             </div>
             <div className="footer-subline">View Ticket summary</div>
           </div>
-          <button className="footer-button">Buy Now</button>
+          <button className="footer-button" onClick={() => handleBuy(tickets[1])}>
+            Buy Now
+          </button>
         </div>
       </div>
     </div>
+  );
+}
+
+function FormsPageWrapper() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const ticketId = location.state?.ticketId;
+  const selectedTicket = tickets.find((t) => t.id === ticketId);
+
+  return <FormsPage selectedTicket={selectedTicket} onBack={() => navigate('/')} />;
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<TicketsPage />} />
+        <Route path="/form" element={<FormsPageWrapper />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
