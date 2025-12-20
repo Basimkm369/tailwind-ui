@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import gitexLogo from '../assets/gitex.png';
 
 const selectOptions = ['Please Select', 'Option 1', 'Option 2', 'Option 3'];
@@ -21,33 +23,42 @@ const workshopsRight = [
   'Future Mobility (1 Day)',
 ];
 
+const products = [
+  'Global Leaders Forum !NEW (3 Days)',
+  'GITEX Main Stage',
+  'Artificial Intelligence & Robotics (15)',
+  'Future Health !NEW (2 Days)',
+  'Cybersecurity (4 Days)',
+  'Future Health !NEW (2 Days)',
+  'AI Everything (4 Days)',
+  'Future Health !NEW (2 Days)',
+];
+
+const trimString = (message) => Yup.string().transform((val) => (typeof val === 'string' ? val.trim() : val)).required(message);
+
+const validationSchema = Yup.object({
+  firstName: trimString('First name is required'),
+  lastName: trimString('Last name is required'),
+  residence: trimString('Country of residence is required'),
+  email: Yup.string()
+    .transform((val) => (typeof val === 'string' ? val.trim() : val))
+    .email('Enter a valid email')
+    .required('Email is required'),
+  confirmEmail: Yup.string()
+    .transform((val) => (typeof val === 'string' ? val.trim() : val))
+    .oneOf([Yup.ref('email'), null], 'Emails must match')
+    .required('Confirm your email'),
+  nationality: Yup.string().transform((val) => (typeof val === 'string' ? val.trim() : val)).nullable(),
+  mobile: trimString('Mobile number is required'),
+  company: trimString('Company name is required'),
+  jobTitle: trimString('Job title is required'),
+  companyType: trimString('Company type is required'),
+  industry: trimString('Industry is required'),
+});
+
 function FormsPage({ selectedTicket, onBack }) {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    residence: '',
-    region: '',
-    email: '',
-    confirmEmail: '',
-    nationality: '',
-    mobile: '',
-    company: '',
-    jobTitle: '',
-    companyType: '',
-    industry: '',
-  });
   const [showSolutions, setShowSolutions] = useState(false);
   const [search, setSearch] = useState('');
-  const products = [
-    'Global Leaders Forum !NEW (3 Days)',
-    'GITEX Main Stage',
-    'Artificial Intelligence & Robotics (15)',
-    'Future Health !NEW (2 Days)',
-    'Cybersecurity (4 Days)',
-    'Future Health !NEW (2 Days)',
-    'AI Everything (4 Days)',
-    'Future Health !NEW (2 Days)',
-  ];
 
   const ticketLabel = useMemo(() => {
     if (!selectedTicket) return 'PREMIUM TICKET - FREE | Incl. 19% VAT';
@@ -59,15 +70,26 @@ function FormsPage({ selectedTicket, onBack }) {
     return `${selectedTicket.id.toUpperCase()} TICKET - ${price} | ${vat}`;
   }, [selectedTicket]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert('Form submitted!');
-  };
+  const formik = useFormik({
+    initialValues: {
+      firstName: '',
+      lastName: '',
+      residence: '',
+      region: '',
+      email: '',
+      confirmEmail: '',
+      nationality: '',
+      mobile: '',
+      company: '',
+      jobTitle: '',
+      companyType: '',
+      industry: '',
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      alert(`Form submitted for ${values.firstName || 'user'}!`);
+    },
+  });
 
   return (
     <div className="form-shell">
@@ -96,39 +118,18 @@ function FormsPage({ selectedTicket, onBack }) {
               <div className="form-ticket-pill">{ticketLabel}</div>
             </div>
 
-            <form className="form-grid" onSubmit={handleSubmit}>
-              <FormField label="First name *" name="firstName" value={formData.firstName} onChange={handleChange} />
-              <FormField label="Last name *" name="lastName" value={formData.lastName} onChange={handleChange} />
+            <form className="form-grid" onSubmit={formik.handleSubmit}>
+              <FormField label="First name *" name="firstName" formik={formik} />
+              <FormField label="Last name *" name="lastName" formik={formik} />
 
-              <SelectField
-                label="Country of residence *"
-                name="residence"
-                value={formData.residence}
-                options={countries}
-                onChange={handleChange}
-              />
-              <SelectField
-                label="Region"
-                name="region"
-                value={formData.region}
-                options={selectOptions}
-                onChange={handleChange}
-              />
+              <SelectField label="Country of residence *" name="residence" options={countries} formik={formik} />
+              <SelectField label="Region" name="region" options={selectOptions} formik={formik} />
 
-              <FormField label="Email address *" name="email" value={formData.email} onChange={handleChange} />
-              <FormField
-                label="Confirm Email address"
-                name="confirmEmail"
-                value={formData.confirmEmail}
-                onChange={handleChange}
-              />
+              <FormField label="Email address *" name="email" type="email" formik={formik} />
+              <FormField label="Confirm Email address" name="confirmEmail" type="email" formik={formik} />
 
-              <FormField
-                label="Nationality"
-                name="nationality"
-                value={formData.nationality}
-                onChange={handleChange}
-              />
+              <FormField label="Nationality" name="nationality" formik={formik} />
+
               <div className="form-field">
                 <label>
                   <span>Mobile number *</span>
@@ -140,31 +141,23 @@ function FormsPage({ selectedTicket, onBack }) {
                     </select>
                     <input
                       name="mobile"
-                      value={formData.mobile}
-                      onChange={handleChange}
+                      value={formik.values.mobile}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       placeholder="000 0000 000"
                     />
                   </div>
+                  {formik.touched.mobile && formik.errors.mobile && (
+                    <div className="field-error">{formik.errors.mobile}</div>
+                  )}
                 </label>
               </div>
 
-              <FormField label="Company name *" name="company" value={formData.company} onChange={handleChange} />
-              <FormField label="Job title *" name="jobTitle" value={formData.jobTitle} onChange={handleChange} />
+              <FormField label="Company name *" name="company" formik={formik} />
+              <FormField label="Job title *" name="jobTitle" formik={formik} />
 
-              <SelectField
-                label="Company type *"
-                name="companyType"
-                value={formData.companyType}
-                options={selectOptions}
-                onChange={handleChange}
-              />
-              <SelectField
-                label="Industry *"
-                name="industry"
-                value={formData.industry}
-                options={industries}
-                onChange={handleChange}
-              />
+              <SelectField label="Company type *" name="companyType" options={selectOptions} formik={formik} />
+              <SelectField label="Industry *" name="industry" options={industries} formik={formik} />
 
               <div className="form-full">
                 <div className="form-products-header">
@@ -206,11 +199,11 @@ function FormsPage({ selectedTicket, onBack }) {
               <div className="summary-body">
                 <div className="summary-fields">
                   <span className="summary-muted">
-                    {(formData.firstName && `${formData.firstName} ${formData.lastName}`) || 'FULL NAME'}
+                    {(formik.values.firstName && `${formik.values.firstName} ${formik.values.lastName}`) || 'FULL NAME'}
                   </span>
-                  <span className="summary-muted">{formData.jobTitle || 'JOB TITLE'}</span>
-                  <span className="summary-muted">{formData.company || 'COMPANY NAME'}</span>
-                  <span className="summary-muted">{formData.residence || 'COUNTRY OF RESIDENCE'}</span>
+                  <span className="summary-muted">{formik.values.jobTitle || 'JOB TITLE'}</span>
+                  <span className="summary-muted">{formik.values.company || 'COMPANY NAME'}</span>
+                  <span className="summary-muted">{formik.values.residence || 'COUNTRY OF RESIDENCE'}</span>
                 </div>
                 <div className="summary-divider" />
                 <div className="summary-badge-block">
@@ -271,21 +264,24 @@ function FormsPage({ selectedTicket, onBack }) {
   );
 }
 
-function FormField({ label, name, value, onChange }) {
+function FormField({ label, name, formik, type = 'text' }) {
+  const { getFieldProps, touched, errors } = formik;
   return (
     <label className="form-field">
       <span>{label}</span>
-      <input name={name} value={value} onChange={onChange} />
+      <input type={type} {...getFieldProps(name)} />
+      {touched[name] && errors[name] && <div className="field-error">{errors[name]}</div>}
     </label>
   );
 }
 
-function SelectField({ label, name, value, options, onChange }) {
+function SelectField({ label, name, options, formik }) {
+  const { values, handleChange, handleBlur, touched, errors } = formik;
   return (
     <label className="form-field">
       <span>{label}</span>
       <div className="select-wrapper">
-        <select name={name} value={value} onChange={onChange}>
+        <select name={name} value={values[name]} onChange={handleChange} onBlur={handleBlur}>
           {options.map((opt) => (
             <option key={opt} value={opt === 'Please Select' ? '' : opt}>
               {opt}
@@ -294,6 +290,7 @@ function SelectField({ label, name, value, options, onChange }) {
         </select>
         <span className="select-arrow">v</span>
       </div>
+      {touched[name] && errors[name] && <div className="field-error">{errors[name]}</div>}
     </label>
   );
 }

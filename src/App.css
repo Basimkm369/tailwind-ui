@@ -1272,6 +1272,12 @@
   height: 13px;
 }
 
+.field-error {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #d14343;
+}
+
 .form-actions {
   grid-column: span 2;
   display: flex;
@@ -1394,14 +1400,14 @@
 
 .summary-hero {
   background: linear-gradient(90deg, #128d32 0%, #1cb14a 100%);
-  min-height: 99px;
-  padding: 18px 18px 22px;
+  min-height: 108px;
+  padding: 18px 24px 26px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   align-items: center;
   color: #ffffff;
-  }
+}
   
   .summary-hero-top {
     display: flex;
@@ -1426,14 +1432,14 @@
   }
   
 .summary-chip {
-  background: #0f7a2e;
+  background: linear-gradient(180deg, #299c3f 0%, #134223 100%);
   width: 303px;
   height: 39px;
   border-radius: 9.8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   border: 1px solid rgba(255, 255, 255, 0.35);
   letter-spacing: 0.02em;
